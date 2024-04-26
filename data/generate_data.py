@@ -52,14 +52,28 @@ def fake_fact_data(customer_data, product_data, date):
 
 
 def generate_tables(records): 
+    """
+    Generate synthetic data tables.
+
+    Args:
+        records (int): Number of records to generate for each table.
+
+    Returns:
+        tuple: A tuple containing DataFrames for the fact, product, customer, and time tables.
+
+    """
     fact_table = []
     time_table = []
     product_table = []
     customer_table = []
+    
+    # Generate data for the specified number of records
     for i in range(records): 
+        # Generate a random date within the specified range
         date = dt.strptime(fake.date(pattern="%Y-%m-%d", 
                             end_datetime=datetime.date(2024, 4,1)), 
                            "%Y-%m-%d").date()
+        # Generate data for each table
         product = fake_product_data()
         customer = fake_customer_data(date)
         times = fake_time_data(date=date)
@@ -68,13 +82,11 @@ def generate_tables(records):
         time_table.append(times)
         fact_table.append(fact)
         customer_table.append(customer)
-        
+    
+    # Append data to respective tables    
     df_fact = pd.DataFrame.from_dict(fact_table)
     df_product = pd.DataFrame.from_dict(product_table)
     df_customer = pd.DataFrame.from_dict(customer_table)
     df_time = pd.DataFrame.from_dict(time_table)
 
     return df_fact, df_product, df_customer, df_time
-
-if __name__ == '__main__': 
-    generate_tables(20)

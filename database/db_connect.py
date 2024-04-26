@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 
 def db_connection(username, password, host, db_name): 
