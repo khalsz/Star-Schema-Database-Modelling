@@ -1,5 +1,5 @@
-from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
+from sqlalchemy import create_engine
 
 def db_connection(username, password, host, db_name): 
     """
