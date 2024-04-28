@@ -2,7 +2,6 @@ import pandas as pd
 from faker import Faker
 import datetime
 from datetime import datetime as dt
-import numpy as np
 import random
 
 fake = Faker('en_US')
