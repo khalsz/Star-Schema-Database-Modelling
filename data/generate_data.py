@@ -12,7 +12,7 @@ def fake_product_data():
     category = fake.word(ext_word_list=["agriculture", "telecoms", "food"])
     
     product = {
-        'product id': fake.random_number(digits=5), 
+        'product_id': fake.random_number(digits=5), 
         'name': name, 
         'category':category, 
         'price': random.randrange(1000,5000, 500), 
@@ -22,33 +22,43 @@ def fake_product_data():
 
 def fake_customer_data(date): 
     customer = {
-        'customer id': fake.random_number(digits=5),
+        'customer_id': fake.random_number(digits=5),
         'name': fake.first_name(),
         "location": fake.country(),
         'email': fake.email(),
-        'registration date': date
+        'registration_date': date
     }
     return customer
-def fake_time_data(date): 
+def fake_time_data(date, sn): 
     times = {
-        'order time': date, 
-        'order month': date.month,
-        'order year': date.year
+        'time_id': sn,
+        'order_time': date, 
+        'order_month': date.month,
+        'order_year': date.year
     }
     return times
     
-def fake_fact_data(customer_data, product_data, date): 
+def fake_fact_data(customer_data, product_data, date, order, time): 
 
     fact = {
-        'order id': fake.random_number(digits=5),
-        'customer id': customer_data['customer id'], 
-        'product id': product_data['product id'],
-        'order date': date, 
-        'quantity': fake.random_number(digits=2), 
+        'order_id': order['order_id'],
+        'customer_id': customer_data['customer_id'], 
+        'product_id': product_data['product_id'],
+        'time_id': time['time_id'],
+        'order_date': date, 
+        'quantity': fake.random_number(digits=3), 
         'amount': fake.random_number(digits=3)
     }
     return fact
 
+def fake_order_data(): 
+    types = fake.word(ext_word_list=["E-commerce", "retail", "healthcare"])
+    
+    order = {
+        'order_id': fake.random_number(digits=5), 
+        'order_type': types, 
+    }
+    return order
 
 def generate_tables(records): 
     """
@@ -58,13 +68,14 @@ def generate_tables(records):
         records (int): Number of records to generate for each table.
 
     Returns:
-        tuple: A tuple containing DataFrames for the fact, product, customer, and time tables.
+        tuple: A tuple containing list of dictionaries for the fact, product, customer, order, and time tables.
 
     """
-    fact_table = []
-    time_table = []
-    product_table = []
-    customer_table = []
+    fact_dicts = []
+    time_dicts = []
+    product_dicts = []
+    customer_dicts = []
+    order_dicts = []
     
     # Generate data for the specified number of records
     for i in range(records): 
@@ -75,17 +86,15 @@ def generate_tables(records):
         # Generate data for each table
         product = fake_product_data()
         customer = fake_customer_data(date)
-        times = fake_time_data(date=date)
-        fact = fake_fact_data(customer, product, date)
-        product_table.append(product)
-        time_table.append(times)
-        fact_table.append(fact)
-        customer_table.append(customer)
-    
-    # Append data to respective tables    
-    df_fact = pd.DataFrame.from_dict(fact_table)
-    df_product = pd.DataFrame.from_dict(product_table)
-    df_customer = pd.DataFrame.from_dict(customer_table)
-    df_time = pd.DataFrame.from_dict(time_table)
+        order = fake_order_data()
+        times = fake_time_data(date=date, sn=i)
+        fact = fake_fact_data(customer, product, date, order, times)
+        
+        # append data record to list
+        product_dicts.append(product)
+        time_dicts.append(times)
+        fact_dicts.append(fact)
+        customer_dicts.append(customer)
+        order_dicts.append(order)
 
-    return df_fact, df_product, df_customer, df_time
+    return fact_dicts, product_dicts, customer_dicts, time_dicts, order_dicts

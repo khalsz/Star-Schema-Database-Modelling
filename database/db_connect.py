@@ -24,10 +24,6 @@ def db_connection(username, password, host, db_name):
         # Create an SQLAlchemy engine
         engine = create_engine(conn_str, echo=True, isolation_level = "AUTOCOMMIT")
         
-        # Check if the database exists, and create it if not
-        if not database_exists(engine.url): 
-            create_database(engine.url)
-        
         # Connect to the database
         connection = engine.connect()
         
